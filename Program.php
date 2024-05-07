@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types=0);
 
 //==============Не редактировать
 final class DataBase
@@ -70,12 +70,24 @@ class DataBaseHelper
     }
 }
 
+
+function recursiveTry($number, $class, $method) 
+{
+    try {
+        return $class->$method($number);
+    } catch (Exception $e) {
+        return recursiveTry($number, $class, $method);
+    }
+}
+
 function step1($dataToFetch)
 {
     $dataBaseHelper = new DataBaseHelper();
 
-    for ($i = 1; $i < count($dataToFetch); $i++) {
-        print($dataBaseHelper->connectAndFetch($dataToFetch[$i]));
+    for ($i = 0; $i < count($dataToFetch); $i++) {
+        $element = $dataToFetch[$i];
+        $result = recursiveTry($element, $dataBaseHelper, 'connectAndFetch');
+        print($result);
         print(PHP_EOL);
     }
 }
@@ -84,8 +96,10 @@ function step2($dataToInsert)
 {
     $dataBaseHelper = new DataBaseHelper();
 
-    for ($i = 0; $i <= count($dataToInsert); $i++) {
-        print($dataBaseHelper->connectAndInsert($dataToInsert[$i]));
+    for ($i = 0; $i < count($dataToInsert); $i++) {
+        $element = $dataToInsert[$i];
+        $result = recursiveTry($element, $dataBaseHelper, 'connectAndInsert');
+        print($result);
         print(PHP_EOL);
     }
 }
